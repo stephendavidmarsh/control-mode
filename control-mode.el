@@ -54,6 +54,8 @@
 (defvar control-mode-emulation-alist nil)
 (make-variable-buffer-local 'control-mode-emulation-alist)
 
+(defvar control-mode-rebind-to-shift)
+
 (defun control-mode-create-alist ()
   (setq control-mode-emulation-alist
         (let* ((mode-key (cons major-mode (sort (mapcar (lambda (x) (car (rassq x minor-mode-map-alist))) (current-minor-mode-maps)) 'string<)))
