@@ -6,7 +6,23 @@ Control mode is a minor mode for Emacs that provides a "control" mode, similar i
 Installation
 ------------
 
-TODO
+###MELPA
+
+If you haven't already, add the following lines to your `.emacs.d/init.el` and restart Emacs so that you can install packages from MELPA:
+
+    (add-to-list 'package-archives
+                 '("melpa" . "http://melpa.milkbox.net/packages/") t)
+
+Then do `M-x package-install RET control-mode RET`.
+
+###Manual install
+
+Download the `control-mode.el` file and put it in your `.emacs.d` directory. Add the following lines to your `.emacs.d/init.el`:
+
+    (add-to-list 'load-path "~/.emacs.d/")
+    (require 'control-mode "control-mode.el")
+
+###Setup
 
 Once you have the control-mode package installed, you can add the following line to your `.emacs`:
 
