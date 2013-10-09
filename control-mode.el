@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; Control mode is a global minor mode for Emacs that provides a
+;; Control mode is a minor mode for Emacs that provides a
 ;; "control" mode, similar in purpose to vim's "normal" mode. Unlike
 ;; the various vim emulation modes, the key bindings in Control mode
 ;; are derived from the key bindings already setup, usually by making
@@ -133,52 +133,50 @@ is positive, and disable it otherwise.  If called from Lisp,
 enable the mode if ARG is omitted or nil.
 
 Control mode is a global minor mode."
-  nil " Control" nil :global t (if control-mode (control-mode-setup) (control-mode-teardown)))
+  nil " Control" nil (if control-mode (control-mode-setup) (control-mode-teardown)))
+
+;;;###autoload
+(define-globalized-minor-mode global-control-mode control-mode control-mode)
+
+(add-hook 'emulation-mode-map-alists 'control-mode-emulation-alist)
 
 (defun control-mode-setup ()
-  (in-all-buffers 'control-mode-buffer-setup)
-  (add-hook 'emulation-mode-map-alists 'control-mode-emulation-alist)
-  (add-hook 'after-change-major-mode-hook 'control-mode-major-mode-change))
+  (unless (string-prefix-p " *Minibuf" (buffer-name))
+    (setq control-mode-emulation-alist nil)
+    (control-mode-create-alist)))
 
 (defun control-mode-teardown ()
-  (in-all-buffers 'control-mode-buffer-teardown)
-  (remove-hook 'emulation-mode-map-alists 'control-mode-emulation-alist)
-  (remove-hook 'after-change-major-mode-hook 'control-mode-major-mode-change))
+  (setq control-mode-emulation-alist nil))
 
-(defun in-all-buffers (f)
-  (mapc (lambda (buf)
-          (unless (string-prefix-p " *Minibuf" (buffer-name buf))
-            (with-current-buffer buf
-              (funcall f))))
-          (buffer-list)))
-
-(defun control-mode-buffer-setup ()
-  (setq control-mode-emulation-alist nil)
-  (control-mode-create-alist))
-
-(defun control-mode-buffer-teardown ()
-  (kill-local-variable 'control-mode-emulation-alist))
-
-(defun control-mode-major-mode-change ()
-  (unless (string-prefix-p " *Minibuf" (buffer-name))
-    (control-mode-buffer-setup)))
-
+;;;###autoload
 (defun control-mode-default-setup ()
+  (define-key control-mode-keymap (kbd "C-z") 'global-control-mode)
+  (global-set-key (kbd "C-z") 'global-control-mode)
+  (add-hook 'control-mode-keymap-generation-functions
+            'control-mode-ctrlx-hacks))
+
+;;;###autoload
+(defun control-mode-localized-setup ()
   (define-key control-mode-keymap (kbd "C-z") 'control-mode)
   (global-set-key (kbd "C-z") 'control-mode)
   (add-hook 'control-mode-keymap-generation-functions
-            (lambda (keymap)
-              (if (eq (key-binding (kbd "C-x f")) 'set-fill-column)
-                  (define-key keymap (kbd "x f") (lookup-key (current-global-map) (kbd "C-x C-f"))))
-              (unless (key-binding (kbd "C-x x"))
-                (define-key keymap (kbd "x x") (lookup-key (current-global-map) (kbd "C-x C-x")))))))
+            'control-mode-ctrlx-hacks))
+
+(defun control-mode-ctrlx-hacks (keymap)
+  (if (eq (key-binding (kbd "C-x f")) 'set-fill-column)
+      (define-key keymap (kbd "x f") (lookup-key (current-global-map) (kbd "C-x C-f"))))
+  (unless (key-binding (kbd "C-x x"))
+    (define-key keymap (kbd "x x") (lookup-key (current-global-map) (kbd "C-x C-x")))))
 
 (defun control-mode-reload-bindings ()
   "Force Control mode to reload all generated keybindings."
   (interactive)
   (setq control-mode-conversion-cache '())
-  (if control-mode
-      (in-all-buffers 'control-mode-buffer-setup)))
+  (mapc (lambda (buf)
+          (with-current-buffer buf
+            (if control-mode
+                (control-mode-setup))))
+        (buffer-list)))
 
 (defcustom control-mode-rebind-to-shift nil
   "Allow rebinding Ctrl-Alt- to Shift-"

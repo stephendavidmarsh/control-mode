@@ -1,7 +1,7 @@
 Control mode (control-mode)
 ============
 
-Control mode is a global minor mode for Emacs that provides a "control" mode, similar in purpose to vim's "normal" mode. Unlike the various vim emulation modes, the key bindings in Control mode are derived from the key bindings already setup, usually by making the control key unnecessary, e.g. `Ctrl-f` becomes `f`. This provides the power of a mode dedicated to controlling the editor without needing to learn or maintain new key bindings.
+Control mode is a minor mode for Emacs that provides a "control" mode, similar in purpose to vim's "normal" mode. Unlike the various vim emulation modes, the key bindings in Control mode are derived from the key bindings already setup, usually by making the control key unnecessary, e.g. `Ctrl-f` becomes `f`. This provides the power of a mode dedicated to controlling the editor without needing to learn or maintain new key bindings.
 
 Installation
 ------------
@@ -12,7 +12,7 @@ Once you have the control-mode package installed, you can add the following line
 
     (control-mode-default-setup)
 
-This will setup `Ctrl-z` to turn on Control mode, and `Ctrl-z` and `z` to turn it off. If you need the usual binding for `Ctrl-z` to suspend Emacs, you can use `Ctrl-x Ctrl-z` instead (`x Ctrl-z` in Control mode). It also binds `x f` to `find-file` (or whatever you had bound to `Ctrl-x Ctrl-f`) in Control mode if it would otherwise be bound to `set-fill-column`. It also binds `x x` to `exchange-point-and-mark` (or whatever you had bound to `Ctrl-x Ctrl-x`) in Control mode if it would otherwise be unbound.
+This will setup `Ctrl-z` to turn on Control mode globally, and `Ctrl-z` and `z` to turn it off globally. If you prefer to use it on a buffer by buffer basis, use `control-mode-localized-setup`. If you need the usual binding for `Ctrl-z` to suspend Emacs, you can use `Ctrl-x Ctrl-z` instead (`x Ctrl-z` in Control mode). It also binds `x f` to `find-file` (or whatever you had bound to `Ctrl-x Ctrl-f`) in Control mode if it would otherwise be bound to `set-fill-column`. It also binds `x x` to `exchange-point-and-mark` (or whatever you had bound to `Ctrl-x Ctrl-x`) in Control mode if it would otherwise be unbound.
 
 What it does
 ------------
