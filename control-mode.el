@@ -44,9 +44,9 @@
 ;; despite being told the minor mode doesn't have a keymap.
 (defvar control-mode-keymap (make-sparse-keymap))
 
-(defvar control-mode-keymap-generation-functions '())
+(defvar control-mode-keymap-generation-functions)
 
-(defvar control-mode-conversion-cache '())
+(defvar control-mode-conversion-cache)
 
 (defvar control-mode-emulation-alist nil)
 (make-variable-buffer-local 'control-mode-emulation-alist)
@@ -168,7 +168,7 @@ Control mode is a global minor mode."
 (defun control-mode-reload-bindings ()
   "Force Control mode to reload all generated keybindings."
   (interactive)
-  (setq control-mode-conversion-cache '())
+  (setq control-mode-conversion-cache nil)
   (mapc (lambda (buf)
           (with-current-buffer buf
             (if control-mode
