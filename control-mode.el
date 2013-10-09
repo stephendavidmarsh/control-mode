@@ -1,13 +1,11 @@
-;;; control-mode.el --- a global minor mode for Emacs that gives a "control" mode, similar in purpose to vim's "normal" mode
+;;; control-mode.el --- A "control" mode, similar to vim's "normal" mode
 
 ;; Copyright (C) 2013 Stephen Marsh
 
-;; Version: 0.1
-
 ;; Author: Stephen Marsh <stephen.david.marsh@gmail.com>
-
+;; Version: 0.1
+;; URL: https://github.com/stephendavidmarsh/control-mode
 ;; Keywords: convenience emulations
-;; Url: https://github.com/stephendavidmarsh/control-mode
 
 ;; Control mode is free software; you can redistribute it and/or modify it
 ;; under the terms of the GNU General Public License as published by
@@ -36,32 +34,32 @@
 
 ;;; Code:
 
-; for flet
+;; for flet
 (eval-when-compile (require 'cl))
 
 (defvar control-mode-overrideable-bindings '(nil self-insert-command undefined))
 
-; Ignore Control-M
+;; Ignore Control-M
 (defvar control-mode-ignore-events '(13))
 
-; This can't be control-mode-map because otherwise the
-; define-minor-mode will try to install it as the minor mode keymap,
-; despite being told the minor mode doesn't have a keymap.
+;; This can't be control-mode-map because otherwise the
+;; define-minor-mode will try to install it as the minor mode keymap,
+;; despite being told the minor mode doesn't have a keymap.
 (defvar control-mode-keymap (make-sparse-keymap))
 
 (defvar control-mode-keymap-generation-functions '())
 
 (defvar control-mode-conversion-cache '())
 
-; This will be buffer local
 (defvar control-mode-emulation-alist nil)
+(make-variable-buffer-local 'control-mode-emulation-alist)
 
 (defun control-mode-create-alist ()
   (setq control-mode-emulation-alist
         (let* ((mode-key (cons major-mode (sort (mapcar (lambda (x) (car (rassq x minor-mode-map-alist))) (current-minor-mode-maps)) 'string<)))
                (value (assoc mode-key control-mode-conversion-cache)))
           (if value (cdr value)
-            (let ((newvalue (mapcar (lambda (x) (cons t x)) (cons (control-mode-create-hook-keymap) (cons control-mode-keymap (mapcar 'get-converted-keymap-for (current-active-maps)))))))
+            (let ((newvalue (mapcar (lambda (x) (cons t x)) (cons (control-mode-create-hook-keymap) (cons control-mode-keymap (mapcar 'control-mode-get-converted-keymap-for (current-active-maps)))))))
               (push (cons mode-key newvalue) control-mode-conversion-cache)
               newvalue)))))
 
@@ -73,9 +71,9 @@
 (defun control-mode-mod-modifiers (event f)
   (event-convert-list (append (funcall f (remq 'click (event-modifiers event))) (list (event-basic-type event)))))
 
-(defun get-converted-keymap-for (keymap)
+(defun control-mode-get-converted-keymap-for (keymap)
   (let ((auto-keymap (make-sparse-keymap)))
-    ; Namespaces? What's that?
+    ;; Namespaces? What's that?
     (flet ((add-binding (e b) (define-key auto-keymap (vector e) b))
            (key-bindingv (e) (key-binding (vector e)))
            (remove-modifier (event mod) (control-mode-mod-modifiers event (lambda (x) (remq mod x))))
@@ -127,6 +125,7 @@
               (add-binding (add-modifier event 'meta) cmbinding)
               (add-binding control-instead cmbinding))))))))
 
+;;;###autoload
 (define-minor-mode control-mode
   "Toggle Control mode.
 With a prefix argument ARG, enable Control mode if ARG
@@ -154,7 +153,7 @@ Control mode is a global minor mode."
           (buffer-list)))
 
 (defun control-mode-buffer-setup ()
-  (setq-local control-mode-emulation-alist nil)
+  (setq control-mode-emulation-alist nil)
   (control-mode-create-alist))
 
 (defun control-mode-buffer-teardown ()
