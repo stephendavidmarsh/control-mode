@@ -12,7 +12,7 @@ Once you have the control-mode package installed, you can add the following line
 
     (control-mode-default-setup)
 
-This will setup `Ctrl-z` to turn on Control mode globally, and `Ctrl-z` and `z` to turn it off globally. If you prefer to use it on a buffer by buffer basis, use `control-mode-localized-setup`. If you need the usual binding for `Ctrl-z` to suspend Emacs, you can use `Ctrl-x Ctrl-z` instead (`x Ctrl-z` in Control mode). It also binds `x f` to `find-file` (or whatever you had bound to `Ctrl-x Ctrl-f`) in Control mode if it would otherwise be bound to `set-fill-column`. It also binds `x x` to `exchange-point-and-mark` (or whatever you had bound to `Ctrl-x Ctrl-x`) in Control mode if it would otherwise be unbound.
+This will setup `Ctrl-z` to turn on Control mode globally, and `Ctrl-z` and `z` to turn it off globally. If you prefer to use it on a buffer by buffer basis, use `control-mode-localized-setup`. If you need the usual binding for `Ctrl-z` to suspend Emacs, you can use `Ctrl-x Ctrl-z` instead (`x Ctrl-z` in Control mode). It also binds `x f` to `find-file` (or whatever you had bound to `Ctrl-x Ctrl-f`) in Control mode if it would otherwise be bound to `set-fill-column`.
 
 What it does
 ------------
@@ -25,7 +25,7 @@ An exception is that it will ignore the binding for `Ctrl-m`, allowing the bindi
 
 Control mode does the right thing when a key binding includes modifiers other than `Ctrl` and `Meta`. For example, it will rebind `Ctrl-Shift-Backspace` to `Shift-Backspace` if `Shift-Backspace` has a key binding it is allowed to replace, and it will try to rebind `Ctrl-Meta-Super-Hyper-x` to `Ctrl-Super-Hyper-x` and `Meta-Super-Hyper-x`.
 
-Control mode rebinds prefix keys but not the keys in a prefix key's keymap. So `Ctrl-x Ctrl-s` becomes `x Ctrl-s`, and `Ctrl-x s` becomes `x s`.
+Control mode will recurse into prefix keys' keymaps, for example `Ctrl-x Ctrl-x` becomes available as `x Ctrl-x` and `x x`.
 
 ###Examples
 
