@@ -19,7 +19,7 @@ What it does
 
 Control mode looks at every key binding you already have defined. For each binding that includes `Ctrl-`, it tries to rebind it without `Ctrl-`. It will only do this if the key binding it is replacing is unbound or bound to `self-insert-command`, the Emacs command for keys that simply enter themselves. It will also look at all bindings with `Meta-` (`Alt` on most keyboards), and try to rebind those without the `Meta-`. `Ctrl-` bindings take precedence over `Meta-` bindings.
 
-An exception is that it will ignore the binding for `Ctrl-m`, allowing the binding for `Meta-m` to be bound to `m`.
+An exception is made for `Ctrl-m` and `Ctrl-i`, which are usually synonyms for `Enter` and `Tab` in Emacs. They will be ignored, allowing `Meta-m` and `Meta-i` to be bound to `m` and `i`.
 
 `Ctrl-Meta-` combinations also get rebound. `Ctrl-Meta-` will get bound to `Ctrl-` if `Ctrl-` was unbound or rebound, and to `Meta-` if `Meta-` was unbound or rebound. If you set the variable `control-mode-rebind-to-shift` to `t` Control mode will also try to rebind to `Shift-` if that binding wouldn't already be taken over by a `Ctrl-Shift-` or `Meta-Shift-` binding. This may interfere with the use of `Shift` with movement commands to select a region however, and so is off by default.
 

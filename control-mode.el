@@ -36,8 +36,8 @@
 
 (defvar control-mode-overrideable-bindings '(nil self-insert-command undefined))
 
-;; Ignore Control-M
-(defvar control-mode-ignore-events '(13))
+;; Ignore Control-m and Control-i
+(defvar control-mode-ignore-events '(13 9))
 
 ;; This can't be control-mode-map because otherwise the
 ;; define-minor-mode will try to install it as the minor mode keymap,
@@ -106,11 +106,12 @@
                            (or (not (key-bindingv control-instead))
                                (memq control-instead control-mode-ignore-events)))
                   (add-binding event newbinding)
-                  (let* ((cmevent (add-modifiers event 'control 'meta))
-                         (cmbinding (convert-keymap cmevent (key-bindingv cmevent))))
-                    (when cmbinding
-                      (add-binding (add-modifier event 'meta) cmbinding)
-                      (add-binding control-instead cmbinding)))))))))
+                  (if (not (memq control-instead control-mode-ignore-events))
+                      (let* ((cmevent (add-modifiers event 'control 'meta))
+                             (cmbinding (convert-keymap cmevent (key-bindingv cmevent))))
+                        (when cmbinding
+                          (add-binding (add-modifier event 'meta) cmbinding)
+                          (add-binding control-instead cmbinding))))))))))
        (handle-binding
         (event binding)
         (unless (memq event control-mode-ignore-events)
