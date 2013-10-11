@@ -92,7 +92,7 @@
           (let ((newbinding (convert-keymap event binding))
                 (eventmods (event-modifiers event)))
             (unless (is-mouse eventmods)
-              (if (keymapp binding) (add-binding event newbinding))
+              (if (keymapp binding) (add-binding (add-modifier event 'meta) newbinding))
               (if (memq 'control eventmods)
                   (let ((only-meta (add-modifier (remove-modifier event 'control) 'meta))
                         (only-shift (add-modifier (remove-modifier event 'control) 'shift)))
