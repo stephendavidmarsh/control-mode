@@ -72,7 +72,7 @@
   (cl-flet*
       ((add-binding (e b) (define-key auto-keymap (vector e) b))
        (key-bindingv (e) (key-binding (vconcat (reverse (cons e prefix)))))
-       (mod-modifiers (e f) (event-convert-list (append (funcall f (event-modifiers event)) (list (event-basic-type e)))))
+       (mod-modifiers (e f) (event-convert-list (append (funcall f (event-modifiers e)) (list (event-basic-type e)))))
        (remove-modifier (e mod) (mod-modifiers e (lambda (x) (remq mod x))))
        (add-modifier (e mod) (mod-modifiers e (lambda (x) (cons mod x))))
        (add-modifiers (e mod1 mod2) (mod-modifiers e (lambda (x) (cons mod2 (cons mod1 x)))))
@@ -119,20 +119,20 @@
         (unless (memq event control-mode-ignore-events)
           (let ((eventmods (event-modifiers event)))
             (if (and (memq 'control eventmods) (not (is-mouse eventmods)))
-                (let ((newevent (remove-modifier event 'control))
-                      (newbinding (convert-keymap event binding)))
-                  (if (keymapp binding) (add-binding event newbinding))
-                  (when (try-to-rebind newevent newbinding)
-                    (unless (memq 'meta eventmods) ; Here to be safe, but Meta events should be inside Escape keymap
-                      (let* ((cmevent (add-modifier event 'meta))
-                             (cmbinding (convert-keymap cmevent (key-bindingv cmevent))))
-                        (when cmbinding
-                          (add-binding event cmbinding)
-                          (let ((metaevent (add-modifier newevent 'meta)))
-                            (try-to-rebind metaevent cmbinding)))))))))
-          (if (and (eq event 27)
-                   (keymapp binding))
-              (map-keymap (function handle-escape-binding) binding)))))
+                (if (and (eq event 27)
+                         (keymapp binding))
+                    (progn
+                      (map-keymap (function handle-escape-binding) binding)
+                      (try-to-rebind 91 binding))
+                  (let ((newevent (remove-modifier event 'control))
+                        (newbinding (convert-keymap event binding)))
+                    (if (keymapp binding) (add-binding event newbinding))
+                    (when (try-to-rebind newevent newbinding)
+                      (unless (memq 'meta eventmods) ; Here to be safe, but Meta events should be inside Escape keymap
+                        (let* ((cmevent (add-modifier event 'meta))
+                               (cmbinding (convert-keymap cmevent (key-bindingv cmevent))))
+                          (when cmbinding
+                            (add-binding event cmbinding))))))))))))
     (map-keymap (function handle-binding) keymap)
     auto-keymap))
 
