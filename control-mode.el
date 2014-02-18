@@ -34,7 +34,7 @@
 
 ;;; Code:
 
-(defvar control-mode-overrideable-bindings '(nil self-insert-command undefined))
+(defvar control-mode-overrideable-bindings '(nil self-insert-command org-self-insert-command undefined))
 
 ;; Ignore Control-m and Control-i
 (defvar control-mode-ignore-events '(13 9))
