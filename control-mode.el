@@ -53,6 +53,8 @@
 
 (defvar control-mode-rebind-to-shift)
 
+(defvar global-control-mode-exceptions)
+
 (defun control-mode-create-alist ()
   (setq control-mode-emulation-alist
         (let* ((mode-key (cons major-mode (sort (mapcar (lambda (x) (car (rassq x minor-mode-map-alist))) (current-minor-mode-maps)) 'string<)))
@@ -147,7 +149,10 @@ Control mode is a global minor mode."
   nil " Control" nil (if control-mode (control-mode-setup) (control-mode-teardown)))
 
 ;;;###autoload
-(define-globalized-minor-mode global-control-mode control-mode control-mode)
+(define-globalized-minor-mode global-control-mode control-mode
+  (lambda ()
+    (unless (apply 'derived-mode-p global-control-mode-exceptions)
+      (control-mode))))
 
 (add-hook 'emulation-mode-map-alists 'control-mode-emulation-alist)
 
@@ -194,6 +199,13 @@ Control mode is a global minor mode."
   :set (lambda (x v)
          (setq control-mode-rebind-to-shift v)
          (control-mode-reload-bindings)))
+
+(defcustom global-control-mode-exceptions '()
+  "List of modes to exclude for `global-control-mode'."
+  :group 'control
+  :type '(repeat (function))
+  :set (lambda (x v)
+         (setq global-control-mode-exceptions v)))
 
 (provide 'control-mode)
 
