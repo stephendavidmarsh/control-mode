@@ -64,6 +64,10 @@ you need the usual binding for `Ctrl-z` to suspend Emacs, you can use
 `find-file` (or whatever you had bound to `Ctrl-x Ctrl-f`) in Control Mode
 if it would otherwise be bound to `set-fill-column`.
 
+If you want to run `control-mode` globally as above but want to disable it for
+some specific modes, add the mode to the `global-control-mode-exceptions` custom
+variable.
+
 What It Does
 ------------
 
