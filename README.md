@@ -26,7 +26,7 @@ key bindings.
 Installation
 ------------
 
-###MELPA
+### MELPA
 
 If you haven't already, add the following lines to your `.emacs.d/init.el`
 and restart Emacs so that you can install packages from MELPA:
@@ -37,7 +37,7 @@ and restart Emacs so that you can install packages from MELPA:
 
 Then do <kbd>M-x package-install RET control-mode RET</kbd>.
 
-###Manual Installation
+### Manual Installation
 
 Download the `control-mode.el` file and put it in your `.emacs.d`
 directory. Add the following lines to your `.emacs.d/init.el`:
@@ -47,7 +47,7 @@ directory. Add the following lines to your `.emacs.d/init.el`:
 (require 'control-mode)
 ```
 
-###Setup
+### Setup
 
 Once you have the control-mode package installed, you can add the following
 line to your `.emacs`:
@@ -102,7 +102,7 @@ to rebind <kbd>⎈ Ctrl</kbd> + <kbd>◆ Meta</kbd> + <kbd>Super</kbd> +
 Control mode will recurse into prefix keys' keymaps, for example <kbd>C-x
 C-x</kbd> becomes available as <kbd>x C-x</kbd> and <kbd>x x</kbd>.
 
-###Examples
+### Examples
 
 Suppose <kbd>C-f</kbd>, <kbd>M-f</kbd>, and <kbd>C-M-f</kbd> are all bound
 to commands but <kbd>f</kbd> is either unbound or just types “f”. Control
@@ -137,7 +137,7 @@ If <kbd>M-n</kbd> isn't bound, but <kbd>C-n</kbd> and <kbd>C-M-n</kbd> are:
 </tr>
 </table>
 
-###Regenerating Key Bindings
+### Regenerating Key Bindings
 
 Control mode generates bindings separately for every combination of major
 mode and minor modes, and so will setup different bindings in each buffer as
